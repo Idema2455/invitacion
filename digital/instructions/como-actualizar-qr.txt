@@ -1,0 +1,8 @@
+1. Cambia el destino de tu enlace corto (ej. bit.ly, goo.gl) al nuevo link
+   sin necesidad de modificar la invitación impresa.
+2. El QR en la invitación siempre apunta a tu enlace corto (goo.gl/tu-evento-infantil).
+3. Para actualizar: ve a tu panel de acortador, edita el destino de ese enlace,
+   y pon la nueva URL (confirmación, formulario, lo que necesites).
+4. El QR físico nunca cambia — solo cambia a dónde apunta.
+
+¡Listo! Tu invitación sigue funcionando sin reimprimir.
