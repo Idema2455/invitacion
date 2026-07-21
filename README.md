@@ -4,6 +4,7 @@ Demo
 🎉 Invitation
 Invitación digital interactiva — con música y QR actualizable
 Includes: background music, WhatsApp RSVP, or dynamic QR (update destination without reprinting).
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
