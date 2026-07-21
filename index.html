@@ -558,7 +558,7 @@
   // CONFIG
   // ═══════════════════════════════════════
   const CONFIG = {
-    musicFile: 'InsidetheCastleWalls_Remix.mp3',
+    youtubeId: '77PW1gc4G2Q',
     rsvpLink: 'https://maps.app.goo.gl/2GLBhF3yaoeSABiW6',
     confettiCount: 120,
     starCount: 80
@@ -582,41 +582,58 @@
   }
   createStarfield();
 
-  const bgAudio = new Audio(CONFIG.musicFile);
-  bgAudio.loop = true;
-  bgAudio.volume = 0.4;
+  // ── YouTube Player ──
+  let player = null;
   let musicPlaying = false;
+  let playerReady = false;
+
+  function onYouTubeIframeAPIReady() {
+    player = new YT.Player('youtube-player', {
+      height: '0', width: '0',
+      videoId: CONFIG.youtubeId,
+      playerVars: {
+        autoplay: 0,
+        loop: 1,
+        playlist: CONFIG.youtubeId,
+        controls: 0,
+        mute: 0
+      },
+      events: {
+        'onReady': function(e) { playerReady = true; e.target.setVolume(50); }
+      }
+    });
+  }
+
+  // Load YouTube API
+  var tag = document.createElement('script');
+  tag.src = 'https://www.youtube.com/iframe_api';
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
   function updateMusicButton() {
     const button = document.getElementById('musicToggle');
     if (!button) return;
-
     const img = button.querySelector('img');
     if (img) {
-      img.src = musicPlaying
-        ? 'play-button-64.webp'
-        : 'play-button-64.webp';
+      img.src = 'data:image/webp;base64,UklGRlIFAABXRUJQVlA4TEYFAAAvP8APEL8Ht7Zt1cpa5/7/cacBciL6px4id7n37DYgBmDbtgFIm927/x+zX9l7twQhICjyfzQ4tq0de85vO7Ztp1aXKjPJIFJmIE6XldK29du2FTfX56VUICLYbL1Qe2B0QJ5fyjaFC70wCCxmNEr9UK1CLFqjCNQIdf4LOsJAolOEcJrgnZs6CWmgusLf0b1XTbvMPMDCSNdQYVrMUs0G+JRvTAytEbrHrwowU3/qlRGgQbMgD0hqgAnpTBoAtJ3qSWMBA6QiKOoftpwgV4h5gSKpMv6ogNqApiQpdCvmQMYWFZpLsBEIJ8UTzCFxVl9CEvMHKp2y0lJSd22bPvjB9g2bL3wNgLBS1YSQUQGzI38lv9VqoJOM1CoBxv+gPyxTogAECgoxV5JUciLHjojS7mhiTEF6yZBELKetlsXqTxIwJwhpXoI5Ybvk3x8+6VNIJYknaHc/KoZU7F+LK+76F6xWKywBKlskEClJKvWaIKF+/BMqBELAP2AvCTNy2m8v5NJ3B1GCR0rzKzQswrA7tIAaOPvd9wY5hGqHJtLuKtoOh1lkIdPctNWnNn5gfh64OTdOiIucv0OcB64TZ5xjY9fYbaILKaTQhaxIoQsppNArUkhhCm5BIIUUYnwJn884+8K6wecW3rbjpTDucfyNzQsulzkP3Ec8LlFP2D3gAYhFGSpGk2Hzb9dFIPB04Oxgx9EqEu3695B2rer2x/rd3/nbM0hoYdte6K5q27Ztu10qtm3btrW8bdu2bbPYtlX956vNl8lZzzL5ZpLJRBH9n4DCpss7b7np/nvuvS9LYsOlYu6Om+O7gTEmLN1+w3VCXH/jrbepu8pDrtytVgohNGcl0dcG+cAjCLQ3yWuDTlgof+Aac9VD1UjRPXi1MaE8MnWlMQ87pOy0MbGKyF5+2RUJRph4ZWwkj16qLqnCSHWskhCBfUxdXIjcqccstTsff8Ihg07LMymVX6gvQiZzrQKdJ2tqq9jQtdxRuaBCWGTUCmFpqEqHzDp5LoXzzzqnmh3ts/Nh4uzzEJiedJY4nRYebwTojFNOrgakSd0Tz6Tk+Ckx5IRTJQJPUutf5U+p046rpoJSBcjRRz0NEeK1LHvl+aNEehCVp0UKOOTIYxAawut1X34uhGNPp4A6HEJ24BEHgIx5Y8MvPXvE4fxMGDcHku1/aAKK4zc3/mIcH3ZcOeT42JHt98zBIKXeIvzhBaX2PQhgnsnJ5D4etA++Tfz9L4j7VRH5fSTZXnv/AeL8HeB3u/E/iTK+J9nvu68FCfEudNXuexCViwTwK8z796Cr/G9kHrDF5hnIufeB3+7qDFHmONmWm5WBtP6A+Muftd6qhCjTW5JtvexvkJQfEq78UcqlfxXIhVRk2yzeHmTtRxv9+Btrl2xbgsDtrCPboXRHUJp+usFPvtolTX0Zgn26A9mk4iKQ95/VXfFTsd9pMlIs8hkZLpw/EeL9F5/Hy9d5v2AK0gw+QeD4edMgi/Kvl9ud87lTS5BqyC1k0pyZ/wAmJHWnlxXoluTJJAj+O3scAM2MWXoy0h7HNYLH8rwEEOngfHYMw/9Gj2fnf6OR4hhjPCsTjfE0cMSokYPZ4IkajlTXDlXD2MiV1HSw/5BBq1lYbYeIAu2+Awetjm611X0L9PvpAWt4NFwO0AGjtF06d7VR2Dh3FqMV3fK8O6fFszxPBEa9NuuIHXoMpsFNh46Y6QKDzVq30+17NocI77QOzZDRFq3bStmmVcu0aae1Wpm0pUUpZUgLDDfp1agxMO6dIeumj2/YoH69ROW+Z2Zw0yU=';
       img.alt = musicPlaying ? 'Silenciar música' : 'Activar música';
     }
-
     button.setAttribute('aria-pressed', musicPlaying ? 'true' : 'false');
     button.setAttribute('aria-label', musicPlaying ? 'Silenciar música' : 'Activar música');
   }
 
   function playMusic() {
-    if (!bgAudio) return;
-    bgAudio.play().then(() => {
+    if (player && playerReady && player.playVideo) {
+      player.playVideo();
       musicPlaying = true;
       updateMusicButton();
-    }).catch(() => {
-      musicPlaying = false;
-      updateMusicButton();
-    });
+    }
   }
 
   function toggleMusic() {
+    if (!player || !playerReady) return;
     if (musicPlaying) {
-      bgAudio.pause();
+      player.pauseVideo();
       musicPlaying = false;
       updateMusicButton();
     } else {
@@ -625,6 +642,21 @@
   }
 
   document.getElementById('musicToggle').addEventListener('click', toggleMusic);
+
+  // Fallback if YouTube API doesn't load
+  setTimeout(function() {
+    if (typeof YT === 'undefined' || !YT.Player) {
+      window.onYouTubeIframeAPIReady = function() {
+        player = {
+          playVideo: function() { console.log('YouTube unavailable'); },
+          pauseVideo: function() {},
+          setVolume: function() {}
+        };
+        playerReady = true;
+      };
+      if (typeof onYouTubeIframeAPIReady === 'function') onYouTubeIframeAPIReady();
+    }
+  }, 5000);
 
   // ── Door-split open ──
   let opened = false;
@@ -637,17 +669,14 @@
     document.getElementById('doorL').classList.add('open-left');
     document.getElementById('doorR').classList.add('open-right');
 
-    // Show card after doors open
     setTimeout(function() {
       document.getElementById('inviteCard').classList.add('visible');
     }, 800);
 
-    // Play music when doors start opening
     setTimeout(function() {
       playMusic();
     }, 300);
 
-    // Confetti
     launchConfetti();
   }
 
@@ -669,9 +698,8 @@
       setTimeout(function(el) { el.classList.add('show'); }, 100, c);
     }
   }
-
-  // QR code generation is disabled; audio control is used instead.
 </script>
 
+<div id="youtube-player" style="display:none;"></div>
 </body>
 </html>
